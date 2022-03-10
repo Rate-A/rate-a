@@ -1,0 +1,9 @@
+{
+  "build": "nx affected:build --parallel 5",
+  "watch": {
+    "include": [
+      "packages/**/*.ts",
+      "packages/**/*.tsx"
+    ]
+  }
+}

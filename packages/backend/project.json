@@ -1,0 +1,53 @@
+{
+  "root": "packages/backend",
+  "sourceRoot": "packages/backend/src",
+  "targets": {
+    "serve": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "cdk watch --app dist/packages/backend/src/index.js -o dist/packages/backend.cdk.out"
+          }
+        ]
+      }
+    },
+    "build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "esbuild --bundle --target=node14 --platform=node packages/backend/src/runtime/lambda.ts --external:aws-sdk --outfile=dist/packages/backend.runtime/index.js"
+          },
+          { "command": "nx run backend:build-tsc" }
+        ]
+      }
+    },
+    "build-tsc": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/backend",
+        "main": "packages/backend/src/index.ts",
+        "tsConfig": "packages/backend/tsconfig.lib.json",
+        "assets": ["packages/backend/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/backend/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/backend"],
+      "options": {
+        "jestConfig": "packages/backend/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
